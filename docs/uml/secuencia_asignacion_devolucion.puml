@@ -1,0 +1,26 @@
+@startuml
+title Asignacion y devolucion formal
+actor Operador
+participant AssignmentsController as Controller
+participant Assignment as Assignment
+participant ReturnReview as ReturnReview
+participant InventoryStateHistory as History
+participant AuditLog as Audit
+database DB
+
+Operador -> Controller : POST /assignments/store
+Controller -> Audit : crear evento ASIGNAR
+Controller -> Assignment : create(data, usuario, audit_id)
+Assignment -> DB : SELECT activo disponible FOR UPDATE
+Assignment -> DB : INSERT asignaciones
+Assignment -> DB : UPDATE inventario = ASIGNADO
+Assignment -> History : record(estado anterior, ASIGNADO)
+
+Operador -> Controller : POST /assignments/close
+Controller -> Audit : crear evento DEVOLUCION
+Controller -> Assignment : close(asignacion, retorno, usuario, audit_id)
+Assignment -> DB : cerrar asignacion
+Assignment -> DB : UPDATE inventario = DEVOLUCION_REGISTRADA
+Assignment -> ReturnReview : createReturn()
+Assignment -> History : record(ASIGNADO, DEVOLUCION_REGISTRADA)
+@enduml

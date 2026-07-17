@@ -1,0 +1,19 @@
+@startuml
+title CMDB Integral - Flujo MVC
+actor Usuario
+boundary "Vista PHP" as View
+control "Controller" as Controller
+control "Core\nAuth/CSRF/Validator" as Core
+entity "Model PDO" as Model
+database "MySQL" as DB
+
+Usuario -> View : envia formulario o abre ruta
+View -> Controller : HTTP GET/POST
+Controller -> Core : autoriza, valida CSRF, sanea
+Controller -> Model : ejecuta caso de uso
+Model -> DB : consultas preparadas
+DB --> Model : filas
+Model --> Controller : datos
+Controller -> View : renderiza o redirige
+View --> Usuario : HTML / Excel / SVG
+@enduml

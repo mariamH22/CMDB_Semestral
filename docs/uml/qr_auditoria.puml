@@ -1,0 +1,24 @@
+@startuml
+title QR seguro y auditoria
+actor UsuarioInterno
+actor Publico
+participant InventoryController as Inventory
+participant InventoryQr as QR
+participant AuditLog as Audit
+participant ReportService as Reports
+database DB
+
+UsuarioInterno -> Inventory : generar/regenerar/revocar QR
+Inventory -> QR : ensure/regenerate/revoke
+QR -> DB : token aleatorio + hash
+Inventory -> Audit : registrar evento QR
+
+Publico -> Inventory : GET /qr?t=token
+Inventory -> QR : findPublicAssetByToken()
+QR -> DB : validar hash y activo
+Inventory -> Audit : registrar acceso publico
+
+UsuarioInterno -> Reports : exportar reporte
+Reports -> DB : consultar datos filtrados
+Reports -> Audit : registrar exportacion
+@enduml

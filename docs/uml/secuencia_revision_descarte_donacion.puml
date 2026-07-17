@@ -1,0 +1,31 @@
+@startuml
+title Revision tecnica, descarte y donacion
+actor Operador
+participant AssignmentsController as Controller
+participant ReturnReview as Review
+participant DigitalSignature as Signature
+participant InventoryStateHistory as History
+participant AuditLog as Audit
+database DB
+
+Operador -> Controller : POST /assignments/review
+Controller -> Audit : crear evento REVISION_TECNICA
+Controller -> Review : completeReview(resultado, observacion)
+Review -> DB : SELECT devolucion + inventario FOR UPDATE
+Review -> Signature : signAction()
+Review -> DB : INSERT revisiones_tecnicas
+Review -> DB : UPDATE inventario = REVISION_TECNICA
+Review -> History : record(inicio revision)
+
+alt resultado DISPONIBLE
+  Review -> DB : UPDATE inventario = DISPONIBLE
+else resultado EN_REPARACION / DANADO
+  Review -> DB : UPDATE inventario = estado tecnico
+else resultado DESCARTE
+  Review -> DB : guardar opinion/evidencia descarte
+else resultado DONADO
+  Review -> DB : guardar beneficiario/evidencia donacion
+end
+
+Review -> History : record(REVISION_TECNICA, resultado)
+@enduml

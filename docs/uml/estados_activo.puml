@@ -1,0 +1,17 @@
+@startuml
+title Estados formales del activo
+[*] --> DISPONIBLE
+DISPONIBLE --> ASIGNADO : asignacion
+ASIGNADO --> DEVOLUCION_REGISTRADA : devolucion
+DEVOLUCION_REGISTRADA --> REVISION_TECNICA : iniciar revision
+REVISION_TECNICA --> DISPONIBLE : aprobado disponible
+REVISION_TECNICA --> EN_REPARACION : reparar
+REVISION_TECNICA --> DESCARTE : opinion tecnica
+REVISION_TECNICA --> DONADO : beneficiario/evidencia
+EN_REPARACION --> REVISION_TECNICA : nueva revision
+EN_REPARACION --> DANADO : no recuperable
+DANADO --> EN_REPARACION : reparar
+DANADO --> REVISION_TECNICA : evaluar
+DESCARTE --> [*]
+DONADO --> [*]
+@enduml

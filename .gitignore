@@ -1,0 +1,41 @@
+/app/Config/config.local.php
+.env
+.env.*
+!.env.example
+
+# Runtime local
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/cache/*
+!/storage/cache/.gitkeep
+/storage/security/*
+!/storage/security/.gitkeep
+/storage/tmp/*
+!/storage/tmp/.gitkeep
+
+# Archivos generados por usuarios
+/public/uploads/equipment/*
+!/public/uploads/equipment/.gitkeep
+/public/uploads/collaborators/*
+!/public/uploads/collaborators/.gitkeep
+
+# Respaldos reales y exportaciones sensibles
+/database/backups/*
+!/database/backups/README.md
+!/database/backups/.gitkeep
+*.sql.gz
+*.dump
+*.backup
+*.bak
+
+# Secretos, llaves privadas y tokens operativos
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.csr
+*.token
+*.secret
+*private*
+*recovery*

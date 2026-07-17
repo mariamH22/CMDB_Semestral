@@ -1,0 +1,21 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="white", pad=0.25, nodesep=0.4];
+  node [shape=box, style="rounded,filled", fillcolor="#f8fafc", color="#0f172a", fontname="Arial", fontsize=10];
+  edge [fontname="Arial", fontsize=9, color="#475569"];
+  User [label="Usuario"];
+  View [label="Vista: Login"];
+  Controller [label="AuthController"];
+  Validator [label="CSRF + Validator"];
+  Model [label="User + AuditLog"];
+  DB [label="MySQL"];
+
+  User -> View [label="1. Envía formulario"];
+  View -> Controller [label="2. POST /login"];
+  Controller -> Validator [label="3. Validar CSRF y campos"];
+  Validator -> Model [label="4. Validar credenciales"];
+  Model -> DB [label="5. SELECT usuario / INSERT intento"];
+  DB -> Model [label="6. Resultado"];
+  Model -> Controller [label="7. Éxito o fallo / bloqueo"];
+  Controller -> View [label="8. Sesión / mensaje"];
+  View -> User [label="9. Dashboard o error"];
+}

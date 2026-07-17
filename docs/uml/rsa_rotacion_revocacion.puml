@@ -1,0 +1,30 @@
+@startuml
+title RSA - Generacion, rotacion y revocacion
+actor Administrador
+participant AuditController as Controller
+participant KeyManagementService as Keys
+participant DigitalSignature as Signer
+participant AuditLog as Audit
+database DB
+folder "Key store externo" as Store
+
+Administrador -> Controller : generar llave
+Controller -> Keys : generateForUser()
+Keys -> Store : guardar privada cifrada
+Keys -> DB : guardar publica/fingerprint ACTIVA
+Controller -> Audit : auditar generacion
+
+Administrador -> Controller : rotar llave
+Controller -> Keys : rotate()
+Keys -> DB : anterior ROTADA, nueva ACTIVA
+Controller -> Audit : auditar rotacion
+
+Administrador -> Controller : revocar llave
+Controller -> Keys : revoke()
+Keys -> DB : estado REVOCADA
+Controller -> Audit : auditar revocacion
+
+Signer -> DB : buscar llave activa
+Signer -> Store : cargar privada cifrada
+Signer -> DB : guardar firma digital
+@enduml

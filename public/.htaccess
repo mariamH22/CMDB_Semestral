@@ -1,0 +1,7 @@
+Options -Indexes
+RewriteEngine On
+
+# Reenvía las rutas al Front Controller sin permitir acceso directo a app/, database/ o docs/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]

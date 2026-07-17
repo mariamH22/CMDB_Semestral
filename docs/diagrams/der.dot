@@ -1,0 +1,44 @@
+digraph G {
+  graph [rankdir=LR, bgcolor="white", pad=0.2, nodesep=0.55, ranksep=0.8];
+  node [shape=record, fontname="Arial", fontsize=9, color="#0f172a", style="rounded,filled", fillcolor="#f8fafc"];
+  edge [fontname="Arial", fontsize=9, color="#64748b"];
+
+  usuarios [label="{usuarios|PK id\lFK colaborador_id\lemail UQ\lrol\lestado_cuenta\l}"];
+  colaboradores [label="{colaboradores|PK id\lidentificacion UQ\ldepartamento\lubicacion NULL\lemail UQ\l}"];
+  ubicaciones [label="{ubicaciones_historial|PK id\lFK colaborador_id\lubicacion_anterior\lubicacion_nueva\ltipo\laudit_id\l}"];
+  categorias [label="{categorias|PK id\lnombre UQ\ltipo\lactivo\l}"];
+  inventario [label="{inventario|PK id\lFK categoria_id\lcodigo_activo UQ\lserie UQ\lestado\les_licencia\l}"];
+  images [label="{inventario_imagenes|PK id\lFK inventario_id\lruta\les_principal\l}"];
+  asignaciones [label="{asignaciones|PK id\lFK inventario_id\lFK colaborador_id\lfecha_asignacion\lestado\l}"];
+  devoluciones [label="{devoluciones|PK id\lFK asignacion_id\lFK inventario_id\lmotivo\lestado_fisico\lestado\l}"];
+  revisiones [label="{revisiones_tecnicas|PK id\lFK devolucion_id\lFK inventario_id\lresultado\lfirma_id\l}"];
+  licencias [label="{licencia_asignaciones|PK id\lFK inventario_id\lFK colaborador_id\lcantidad\lestado\l}"];
+  necesidades [label="{necesidades|PK id\lFK colaborador_id\lFK categoria_id\lestado\lcantidad\lanio_objetivo\l}"];
+  necesidades_hist [label="{necesidades_historial|PK id\lFK necesidad_id\lestado_anterior\lestado_nuevo\l}"];
+  presupuestos [label="{presupuestos|PK id\ltipo\lanio_inicio\ltotal_estimado\l}"];
+  presupuesto_detalles [label="{presupuesto_detalles|PK id\lFK presupuesto_id\lFK necesidad_id\lanio\lsubtotal\l}"];
+  bitacora [label="{bitacora|PK id\lFK usuario_id\lentidad\lentidad_id\lrecord_hash\l}"];
+  firmas [label="{firmas_digitales|PK id\lFK llave_id\lFK usuario_id\lpayload_hash\l}"];
+  llaves [label="{llaves_rsa|PK id\lFK usuario_id\lfingerprint UQ\lestado\l}"];
+  qr [label="{inventario_qr|PK id\lFK inventario_id\ltoken_hash\lactivo\l}"];
+
+  colaboradores -> usuarios [label="0..1"];
+  colaboradores -> ubicaciones [label="1..N"];
+  usuarios -> ubicaciones [label="1..N"];
+  categorias -> inventario [label="1..N"];
+  inventario -> images [label="1..N"];
+  inventario -> asignaciones [label="1..N"];
+  colaboradores -> asignaciones [label="1..N"];
+  asignaciones -> devoluciones [label="1..N"];
+  devoluciones -> revisiones [label="1..N"];
+  inventario -> licencias [label="1..N"];
+  colaboradores -> licencias [label="1..N"];
+  colaboradores -> necesidades [label="1..N"];
+  categorias -> necesidades [label="1..N"];
+  necesidades -> necesidades_hist [label="1..N"];
+  presupuestos -> presupuesto_detalles [label="1..N"];
+  necesidades -> presupuesto_detalles [label="0..N"];
+  usuarios -> bitacora [label="1..N"];
+  llaves -> firmas [label="1..N"];
+  inventario -> qr [label="1..N"];
+}

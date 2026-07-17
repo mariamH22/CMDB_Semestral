@@ -1,0 +1,32 @@
+digraph G {
+  graph [rankdir=LR, bgcolor="white", pad=0.2, nodesep=0.55, ranksep=0.8];
+  node [shape=record, fontname="Arial", fontsize=10, color="#0f172a", style="rounded,filled", fillcolor="#f8fafc"];
+  edge [fontname="Arial", fontsize=9, color="#64748b"];
+
+  User [label="{User|+ id\l+ email\l+ rol\l+ activo\l|+ create()\l+ update()\l+ changePassword()\l}"];
+  Collaborator [label="{Collaborator|+ identificacion\l+ departamento\l+ ubicacion\l|+ create()\l+ update()\l+ recordLocationHistory()\l}"];
+  Inventory [label="{InventoryItem|+ codigo_activo\l+ serie\l+ estado\l+ firma_integridad\l|+ create()\l+ update()\l+ setStatus()\l+ images()\l}"];
+  Assignment [label="{Assignment|+ inventario_id\l+ colaborador_id\l+ fecha_asignacion\l|+ create()\l+ close()\l}"];
+  ReturnReview [label="{ReturnReview|+ devolucion\l+ revision\l|+ createReturn()\l+ completeReview()\l}"];
+  License [label="{LicenseAssignment|+ cantidad\l+ estado\l|+ assign()\l+ release()\l+ usedQuantity()\l}"];
+  Need [label="{NeedRequest|+ tipo_necesidad\l+ prioridad\l+ estado\l|+ create()\l+ transitionStatus()\l+ history()\l}"];
+  Budget [label="{Budget|+ tipo\l+ anio_inicio\l+ total\l|+ create()\l+ generateFromNeeds()\l+ summary()\l}"];
+  Reports [label="{ReportService|+ dashboard()\l+ assetsReport()\l+ licenseSeatsReport()\l}"];
+  Audit [label="{AuditLog|+ accion\l+ nivel\l+ record_hash\l|+ create()\l+ attachSignature()\l}"];
+  QR [label="{InventoryQr|+ token\l+ payload_hash\l|+ ensureForInventoryByUser()\l+ regenerateForInventory()\l}"];
+  Signer [label="{DigitalSignature|+ signAction()\l+ verify()\l}"];
+  ImagePolicy [label="{InventoryImagePolicy|+ assertNewHardwareImages()\l+ legacyWarning()\l}"];
+
+  User -> Collaborator [label="0..1"];
+  Inventory -> Assignment [label="1..N"];
+  Collaborator -> Assignment [label="1..N"];
+  Assignment -> ReturnReview [label="devolucion"];
+  Inventory -> License [label="licencia"];
+  Collaborator -> Need [label="solicita"];
+  Need -> Budget [label="proyecta"];
+  Reports -> Inventory [label="lee"];
+  Reports -> Assignment [label="lee"];
+  Audit -> Signer [label="firma/verifica"];
+  Inventory -> QR [label="token"];
+  Inventory -> ImagePolicy [label="valida"];
+}

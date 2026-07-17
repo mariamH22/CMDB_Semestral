@@ -1,0 +1,9 @@
+@startuml
+[*] --> Activo
+Activo --> Intento1 : contraseña inválida
+Intento1 --> Intento2 : contraseña inválida
+Intento2 --> Bloqueado : tercer intento inválido
+Intento1 --> Activo : login válido
+Intento2 --> Activo : login válido
+Bloqueado --> Activo : desbloqueo administrador / token
+@enduml

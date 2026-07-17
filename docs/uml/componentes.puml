@@ -1,0 +1,32 @@
+@startuml
+title CMDB Integral - Componentes
+skinparam componentStyle rectangle
+
+actor Usuario
+actor Colaborador
+
+component "Navegador" as Browser
+component "Front Controller\npublic/index.php" as Front
+component "Router" as Router
+component "Controllers" as Controllers
+component "Models PDO" as Models
+component "Views PHP" as Views
+component "Core Services\nAuth, CSRF, Validator,\nReportService, QR, Crypto" as Core
+database "MySQL / MariaDB\ncmdb_integral" as DB
+folder "public/uploads" as Uploads
+folder "Key store externo\nfuera del repo" as Keys
+
+Usuario --> Browser
+Colaborador --> Browser
+Browser --> Front
+Front --> Router
+Router --> Controllers
+Controllers --> Core
+Controllers --> Models
+Controllers --> Views
+Models --> DB
+Core --> DB
+Controllers --> Uploads
+Core --> Keys
+Views --> Browser
+@enduml

@@ -1,0 +1,20 @@
+digraph G {
+  graph [rankdir=LR, bgcolor="white", pad=0.25];
+  node [shape=ellipse, style="filled", fillcolor="#f8fafc", color="#0f172a", fontname="Arial"];
+  edge [fontname="Arial", fontsize=10, color="#475569"];
+  Start [shape=point, label=""];
+  Active [label="ACTIVO\n0 intentos"];
+  Fail1 [label="Intento fallido 1"];
+  Fail2 [label="Intento fallido 2"];
+  Locked [label="BLOQUEADO\n3 intentos"];
+  Reset [label="Desbloqueado / recuperación"];
+  Start -> Active;
+  Active -> Fail1 [label=" contraseña inválida"];
+  Fail1 -> Fail2 [label=" contraseña inválida"];
+  Fail2 -> Locked [label=" tercera contraseña inválida"];
+  Fail1 -> Active [label=" login válido"];
+  Fail2 -> Active [label=" login válido"];
+  Active -> Active [label=" login válido"];
+  Locked -> Reset [label=" administrador / token"];
+  Reset -> Active [label=" contador = 0"];
+}

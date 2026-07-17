@@ -1,0 +1,17 @@
+@startuml
+actor Usuario
+participant "Vista Login" as Vista
+participant "AuthController" as Controlador
+participant "CSRF + Validator" as Validacion
+participant "User + AuditLog" as Modelo
+database MySQL
+Usuario -> Vista: Completa formulario
+Vista -> Controlador: POST /login
+Controlador -> Validacion: validar CSRF / campos
+Validacion -> Modelo: buscar credencial
+Modelo -> MySQL: SELECT usuario + INSERT intento
+MySQL --> Modelo: resultado
+Modelo --> Controlador: éxito / fallo / bloqueo
+Controlador --> Vista: sesión o mensaje
+Vista --> Usuario: dashboard o error
+@enduml

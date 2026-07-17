@@ -1,0 +1,26 @@
+@startuml
+title Solicitudes y presupuesto
+actor Colaborador
+actor Administrador
+participant PortalController as Portal
+participant NeedsController as Needs
+participant NeedRequest as Need
+participant BudgetsController as Budgets
+participant Budget as Budget
+database DB
+
+Colaborador -> Portal : crear solicitud
+Portal -> Need : create(EN_ESPERA)
+Need -> DB : INSERT necesidades
+
+Administrador -> Needs : aprobar / rechazar / tramitar
+Needs -> Need : transitionStatus()
+Need -> DB : UPDATE estado, procesador, respuesta
+Need -> DB : INSERT necesidades_historial
+
+Administrador -> Budgets : generar anual/quinquenal
+Budgets -> Budget : generateFromNeeds(filtros)
+Budget -> DB : leer solicitudes con costo
+Budget -> DB : INSERT presupuestos + detalles
+Administrador -> Budgets : descargar Excel
+@enduml

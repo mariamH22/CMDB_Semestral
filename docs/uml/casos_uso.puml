@@ -1,0 +1,29 @@
+@startuml
+left to right direction
+actor Administrador
+actor Operador
+actor Colaborador
+usecase "Iniciar sesión" as U1
+usecase "Gestionar usuarios" as U2
+usecase "Gestionar inventario" as U3
+usecase "Asignar/devolver equipo" as U4
+usecase "Generar reportes Excel" as U5
+usecase "Consultar bitácora" as U6
+usecase "Ver mis equipos" as U7
+usecase "Solicitar necesidad" as U8
+usecase "Cambiar/recuperar contraseña" as U9
+Administrador --> U1
+Administrador --> U2
+Administrador --> U3
+Administrador --> U4
+Administrador --> U5
+Administrador --> U6
+Operador --> U1
+Operador --> U3
+Operador --> U4
+Operador --> U5
+Colaborador --> U1
+Colaborador --> U7
+Colaborador --> U8
+Colaborador --> U9
+@enduml

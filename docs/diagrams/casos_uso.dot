@@ -1,0 +1,38 @@
+digraph G {
+  graph [rankdir=LR, bgcolor="white", pad=0.2, nodesep=0.45, ranksep=1.0];
+  node [fontname="Arial", fontsize=11];
+  edge [color="#64748b", penwidth=1.4];
+
+  admin [shape=box, style="rounded,filled", fillcolor="#e0f2fe", color="#0284c7", label="Administrador"];
+  operator [shape=box, style="rounded,filled", fillcolor="#e0f2fe", color="#0284c7", label="Operador"];
+  collab [shape=box, style="rounded,filled", fillcolor="#dcfce7", color="#16a34a", label="Colaborador"];
+  public [shape=box, style="rounded,filled", fillcolor="#fef9c3", color="#ca8a04", label="Consulta publica QR"];
+
+  login [shape=ellipse, style="filled", fillcolor="#f8fafc", label="Iniciar sesion"];
+  users [shape=ellipse, style="filled", fillcolor="#f8fafc", label="Gestionar usuarios"];
+  collaborators [shape=ellipse, style="filled", fillcolor="#f8fafc", label="Gestionar colaboradores"];
+  inventory [shape=ellipse, style="filled", fillcolor="#f8fafc", label="Gestionar inventario e imagenes"];
+  lifecycle [shape=ellipse, style="filled", fillcolor="#f8fafc", label="Estados, devolucion y revision"];
+  licenses [shape=ellipse, style="filled", fillcolor="#f8fafc", label="Asignar cupos de licencia"];
+  qr [shape=ellipse, style="filled", fillcolor="#f8fafc", label="Generar / revocar QR"];
+  reports [shape=ellipse, style="filled", fillcolor="#f8fafc", label="Generar reportes Excel"];
+  budgets [shape=ellipse, style="filled", fillcolor="#f8fafc", label="Generar presupuesto"];
+  audit [shape=ellipse, style="filled", fillcolor="#f8fafc", label="Consultar auditoria y firmas"];
+  keys [shape=ellipse, style="filled", fillcolor="#f8fafc", label="Gestionar llaves RSA"];
+  portal [shape=ellipse, style="filled", fillcolor="#f8fafc", label="Ver mis equipos y licencias"];
+  request [shape=ellipse, style="filled", fillcolor="#f8fafc", label="Solicitar necesidad"];
+  password [shape=ellipse, style="filled", fillcolor="#f8fafc", label="Cambiar / recuperar contrasena"];
+  qrlookup [shape=ellipse, style="filled", fillcolor="#f8fafc", label="Consultar activo por token QR"];
+
+  admin -> login; operator -> login; collab -> login;
+  admin -> users; admin -> collaborators; operator -> collaborators;
+  admin -> inventory; operator -> inventory;
+  admin -> lifecycle; operator -> lifecycle;
+  admin -> licenses; operator -> licenses;
+  admin -> qr; operator -> qr;
+  admin -> reports; operator -> reports;
+  admin -> budgets;
+  admin -> audit; admin -> keys;
+  collab -> portal; collab -> request; collab -> password;
+  public -> qrlookup;
+}
