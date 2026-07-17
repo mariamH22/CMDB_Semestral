@@ -14,6 +14,7 @@ final class AuditLog
 
     public function create(?int $userId, string $module, string $action, string $description, string $level = 'INFO', array $context = []): int
     {
+        // Si la migracion avanzada existe, usa audit trail encadenado; si no, usa bitacora simple.
         if ($this->supportsTrail()) {
             return $this->createTrailRecord($userId, $module, $action, $description, $level, $context);
         }
@@ -156,6 +157,7 @@ final class AuditLog
     private function createTrailRecord(?int $userId, string $module, string $action, string $description, string $level, array $context): int
     {
         return $this->db->transaction(function (Database $db) use ($userId, $module, $action, $description, $level, $context): int {
+            // FOR UPDATE evita que dos eventos simultaneos rompan el encadenamiento de hashes.
             $last = $db->fetch(
                 "SELECT record_hash
                  FROM bitacora
@@ -168,6 +170,7 @@ final class AuditLog
             $createdAt = date('Y-m-d H:i:s');
             $before = ServiceContainer::auditTrail()->sanitize((array) ($context['before'] ?? []));
             $after = ServiceContainer::auditTrail()->sanitize((array) ($context['after'] ?? []));
+            // Se separan datos anteriores/posteriores para explicar claramente que cambio.
             $event = [
                 'payload_version' => 1,
                 'usuario_id' => $userId,

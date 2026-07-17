@@ -27,8 +27,10 @@ final class Database
                 Config::get('db.user'),
                 Config::get('db.password'),
                 [
+                    // ERRMODE_EXCEPTION evita fallos silenciosos y permite errores controlados.
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    // Preparados reales de MySQL para reducir riesgo de SQL injection.
                     PDO::ATTR_EMULATE_PREPARES => false,
                 ]
             );
@@ -39,6 +41,7 @@ final class Database
 
     public static function instance(): self
     {
+        // Singleton simple: una conexion PDO por solicitud.
         if (self::$instance === null) {
             self::$instance = new self();
         }
@@ -54,6 +57,7 @@ final class Database
     public function fetch(string $sql, array $params = []): ?array
     {
         try {
+            // Todas las consultas pasan por prepare/execute con parametros nombrados.
             $statement = $this->pdo->prepare($sql);
             $statement->execute($params);
             $row = $statement->fetch();
@@ -101,6 +105,7 @@ final class Database
     public function transaction(callable $callback): mixed
     {
         try {
+            // Si una operacion compuesta falla, rollback mantiene la base consistente.
             $this->pdo->beginTransaction();
             $result = $callback($this);
             $this->pdo->commit();
@@ -119,6 +124,7 @@ final class Database
     {
         $cacheKey = 'table:' . $table;
         if (!array_key_exists($cacheKey, $this->schemaCache)) {
+            // Cachea inspeccion de esquema para soportar migraciones incrementales sin consultar en cada paso.
             $row = $this->fetch(
                 "SELECT COUNT(*) AS total
                  FROM information_schema.TABLES

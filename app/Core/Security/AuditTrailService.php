@@ -27,6 +27,7 @@ final class AuditTrailService
 
     public function payload(array $event): array
     {
+        // Payload canonico: siempre los mismos campos y orden para que el hash sea reproducible.
         return [
             'version' => (int) ($event['payload_version'] ?? 1),
             'usuario_id' => $this->nullableInt($event['usuario_id'] ?? null),
@@ -55,6 +56,7 @@ final class AuditTrailService
 
     public function hash(?string $previousHash, array $payload): string
     {
+        // Encadena el hash anterior con el evento actual para detectar alteraciones historicas.
         return hash('sha256', (string) $previousHash . $this->canonical($payload));
     }
 
@@ -93,6 +95,7 @@ final class AuditTrailService
             $expectedCurrent = $this->hash($storedPrevious ? (string) $storedPrevious : null, $payload);
             $status = self::STATUS_VALID;
 
+            // Verifica tres cosas: continuidad de cadena, formato del hash y payload sin cambios.
             if (($storedPrevious ?: null) !== ($expectedPrevious ?: null)) {
                 $status = self::STATUS_CHAIN_BROKEN;
             } elseif (!preg_match('/\A[a-f0-9]{64}\z/i', $storedCurrent)) {

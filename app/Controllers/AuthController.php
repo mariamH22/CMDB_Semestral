@@ -20,6 +20,7 @@ final class AuthController extends Controller
     private User $users;
     private AuditLog $audit;
     private ModelFactory $models;
+    // Mensaje unico para no revelar si fallo usuario, clave, baja logica o bloqueo.
     private const GENERIC_LOGIN_ERROR = 'Credenciales inválidas o cuenta no disponible.';
 
     public function __construct(?ModelFactory $models = null)
@@ -92,6 +93,7 @@ final class AuthController extends Controller
 
             $this->users->resetFailuresAndLogin((int) $user['id']);
             $this->audit->loginAttempt((int) $user['id'], $identifier, true, 'Inicio de sesión correcto');
+            // La bitacora guarda el evento exitoso con usuario, entidad y resultado verificable.
             $this->audit->create((int) $user['id'], 'AUTENTICACION', 'LOGIN', 'Inicio de sesión exitoso.', 'INFO', [
                 'entity' => 'usuarios',
                 'entity_id' => (int) $user['id'],
@@ -162,6 +164,7 @@ final class AuthController extends Controller
 
             $token = bin2hex(random_bytes(20));
             $this->models->passwordResets()->create((int) $user['id'], $token);
+            // AuditDataSanitizer enmascara tokens/contraseñas antes de persistir contexto sensible.
             $this->audit->create((int) $user['id'], 'AUTENTICACION', 'RECUPERACION_SOLICITADA', 'Solicitud de recuperación de contraseña.', 'INFO', [
                 'entity' => 'usuarios',
                 'entity_id' => (int) $user['id'],
@@ -207,6 +210,7 @@ final class AuthController extends Controller
             $this->users->changePassword((int) $reset['usuario_id'], $password);
             $this->users->unlock((int) $reset['usuario_id']);
             $this->models->passwordResets()->use((int) $reset['id']);
+            // Se audita el restablecimiento, pero el sanitizador no deja la clave en claro.
             $this->audit->create((int) $reset['usuario_id'], 'AUTENTICACION', 'CONTRASENA_RESTABLECIDA', 'Contraseña restablecida mediante token.', 'INFO', [
                 'entity' => 'usuarios',
                 'entity_id' => (int) $reset['usuario_id'],

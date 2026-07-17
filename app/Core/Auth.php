@@ -9,6 +9,7 @@ final class Auth
 
     public static function login(array $user): void
     {
+        // Regenerar el ID de sesion reduce el riesgo de session fixation.
         session_regenerate_id(true);
 
         $_SESSION[self::KEY] = [
@@ -23,6 +24,7 @@ final class Auth
     public static function logout(): void
     {
         unset($_SESSION[self::KEY]);
+        // Tambien se regenera al cerrar para invalidar referencias antiguas.
         session_regenerate_id(true);
     }
 

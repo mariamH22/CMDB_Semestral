@@ -94,6 +94,7 @@ final class InventoryController extends Controller
             $data['imagen_principal'] = $mainImage['path'] ?? null;
             $data['thumbnail'] = $mainImage['thumbnail'] ?? null;
             $data['new_image_path'] = $extraImage['path'] ?? null;
+            // Inventario e imagen adicional se guardan juntos para no dejar registros a medias.
             $id = $this->db->transaction(function () use ($data): int {
                 $id = $this->inventory->create($data);
                 if (!empty($data['new_image_path'])) {
@@ -294,11 +295,13 @@ final class InventoryController extends Controller
         $asset = $this->qr->findPublicAssetByToken($token);
         if (!$asset) {
             http_response_code(404);
+            // Los QR invalidos tambien se registran para detectar intentos de enumeracion.
             $this->audit->create(null, 'QR', 'ACCESO_PUBLICO_INVALIDO', 'Consulta pública QR no válida.', 'ADVERTENCIA', [
                 'result' => 'NO_VALIDO',
             ]);
         } else {
             $this->qr->recordAccess((int) ($asset['_qr_id'] ?? 0));
+            // La consulta publica solo expone el payload autorizado, no todos los campos internos.
             $this->audit->create(null, 'QR', 'ACCESO_PUBLICO', "Consulta pública QR del activo #{$asset['_inventario_id']}.", 'INFO', [
                 'entity' => 'inventario',
                 'entity_id' => (int) $asset['_inventario_id'],
@@ -469,6 +472,7 @@ final class InventoryController extends Controller
             $this->authorize('inventory.manage');
             $this->csrf();
 
+            // LicenseAssignment valida cupos, vencimiento y estado antes de registrar la asignacion.
             $this->licenseAssignments->assign(
                 $id,
                 Validator::integerRange((int) ($_POST['colaborador_id'] ?? 0), 1, PHP_INT_MAX, 'Colaborador'),

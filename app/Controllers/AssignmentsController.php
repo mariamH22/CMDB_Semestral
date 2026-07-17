@@ -59,6 +59,7 @@ final class AssignmentsController extends Controller
         try {
             $this->authorize('assignments.manage');
             $this->csrf();
+            // La asignacion cambia el activo a ASIGNADO dentro del modelo y deja auditoria.
             $data = [
                 'inventario_id' => Validator::integerRange((int) ($_POST['inventario_id'] ?? 0), 1, PHP_INT_MAX, 'Activo'),
                 'colaborador_id' => Validator::integerRange((int) ($_POST['colaborador_id'] ?? 0), 1, PHP_INT_MAX, 'Colaborador'),
@@ -147,6 +148,7 @@ final class AssignmentsController extends Controller
             $this->csrf();
 
             $result = $_POST['resultado'] ?? '';
+            // La revision tecnica decide si el activo vuelve, queda en descarte o sale por donacion.
             if (!in_array($result, InventoryStatus::reviewResults(), true)) {
                 throw new \RuntimeException('Resultado de revisión inválido.');
             }

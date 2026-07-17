@@ -13,6 +13,7 @@ final class IntegritySigner
 
     public static function sign(array $fields): string
     {
+        // Firma HMAC de campos criticos del activo para detectar cambios fuera del flujo normal.
         return ServiceContainer::integritySigner()->sign($fields);
     }
 

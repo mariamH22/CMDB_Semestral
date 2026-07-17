@@ -21,6 +21,7 @@ final class DigitalSignature
             return null;
         }
 
+        // Si RSA no esta configurado, el sistema sigue operando y deja la firma como no aplicable.
         if (!ServiceContainer::keyManagement()->isConfigured()) {
             return null;
         }
@@ -59,6 +60,7 @@ final class DigitalSignature
         $payloadHash = ServiceContainer::signedPayloadFactory()->hash($signedPayload);
         $payloadJson = ServiceContainer::signedPayloadFactory()->canonical($signedPayload);
 
+        // La firma se calcula sobre el hash canonico, no sobre texto variable de pantalla.
         $privateKey = ServiceContainer::keyManagement()->loadPrivateKey($reference);
         if ($privateKey === null) {
             return null;

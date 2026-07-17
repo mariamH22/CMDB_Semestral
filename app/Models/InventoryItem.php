@@ -75,6 +75,7 @@ final class InventoryItem
         $items = $this->db->fetchAll($sql, $params);
 
         foreach ($items as &$item) {
+            // Cada fila incluye verificacion HMAC para mostrar si el activo fue alterado.
             $item['integridad_valida'] = IntegritySigner::verify(
                 [$item['serie'], $item['tipo_activo'], $item['estado'], $item['fecha_ingreso']],
                 $item['firma_integridad']
@@ -230,10 +231,12 @@ final class InventoryItem
         InventoryStatus::assertCanCreate((string) $data['estado']);
         InventoryImagePolicy::assertPersistedHardwareImages($data);
 
+        // La firma se recalcula a partir de campos estables del activo.
         $data['firma_integridad'] = IntegritySigner::sign([
             $data['serie'], $data['tipo_activo'], $data['estado'], $data['fecha_ingreso']
         ]);
 
+        // availableColumns permite que el codigo funcione con instalaciones que aplican migraciones gradualmente.
         $columns = $this->availableColumns($this->requiredColumns());
 
         foreach ($this->optionalColumns() as $column) {
@@ -351,6 +354,7 @@ final class InventoryItem
             return;
         }
 
+        // Todas las transiciones de estado pasan por la politica central del ciclo de vida.
         InventoryStatus::assertTransition(
             (string) $item['estado'],
             $status,

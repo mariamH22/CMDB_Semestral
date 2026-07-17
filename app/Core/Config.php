@@ -9,11 +9,13 @@ final class Config
 
     public static function load(array $data): void
     {
+        // La configuracion base puede ser sobrescrita por config.local.php sin versionar.
         self::$data = $data;
     }
 
     public static function get(string $key, mixed $default = null): mixed
     {
+        // Acceso por puntos: Config::get('db.host') lee ['db']['host'].
         $segments = explode('.', $key);
         $value = self::$data;
 

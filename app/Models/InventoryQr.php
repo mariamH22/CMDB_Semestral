@@ -62,6 +62,7 @@ final class InventoryQr
             return null;
         }
 
+        // Regenerar revoca el QR anterior en la misma transaccion para que solo uno quede activo.
         return $this->db->transaction(function (Database $db) use ($inventoryId, $userId, $reason): ?array {
             $current = $db->fetch(
                 "SELECT * FROM inventario_qr
@@ -105,6 +106,7 @@ final class InventoryQr
         }
 
         $token = QrToken::normalize($token);
+        // Se busca por token_hash cuando existe para no depender de tokens en texto claro.
         $where = $this->db->columnExists('inventario_qr', 'token_hash')
             ? '(q.token_hash = :token_hash OR q.token = :token)'
             : 'q.token = :token';
@@ -145,6 +147,7 @@ final class InventoryQr
             return null;
         }
 
+        // El payload publico excluye datos sensibles y solo contiene informacion autorizada del activo.
         return array_merge(QrPublicPayload::fromAsset($row), [
             '_qr_id' => (int) $row['qr_id'],
             '_inventario_id' => (int) $row['inventario_id'],
@@ -178,6 +181,7 @@ final class InventoryQr
     private function createForInventory(int $inventoryId, ?int $userId = null, ?int $regeneratedFromId = null): array
     {
         $token = QrToken::generate();
+        // payload_hash une el token con el activo para detectar QR manipulados o reutilizados.
         $columns = ['inventario_id', 'token', 'payload_hash', 'activo'];
         $data = [
             'inventario_id' => $inventoryId,

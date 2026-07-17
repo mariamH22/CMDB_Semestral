@@ -12,6 +12,7 @@ session_start([
     'cookie_samesite' => 'Lax',
 ]);
 
+// Carga manual del autoloader y helpers para mantener el proyecto portable sin Composer.
 require_once dirname(__DIR__) . '/app/Core/Autoloader.php';
 require_once dirname(__DIR__) . '/app/Core/helpers.php';
 
@@ -39,6 +40,9 @@ date_default_timezone_set((string) Config::get('app.timezone', 'America/Panama')
 ErrorHandler::register(new WebErrorRenderer());
 
 $router = new Router();
+
+// Las rutas conectan URL + metodo HTTP con controladores MVC.
+// La validacion de permisos se hace dentro de cada controlador.
 
 // Sitio público
 $router->get('/', [HomeController::class, 'index']);
@@ -158,4 +162,5 @@ $router->post('/news/store', [NewsController::class, 'store']);
 $router->get('/news/edit', [NewsController::class, 'edit']);
 $router->post('/news/update', [NewsController::class, 'update']);
 
+// Punto final del front controller: normaliza la URI y ejecuta la accion solicitada.
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

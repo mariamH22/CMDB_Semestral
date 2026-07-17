@@ -12,6 +12,7 @@ final class Router
 
     public function __construct(?callable $controllerFactory = null)
     {
+        // La fabrica permite inyectar modelos en pruebas sin cambiar los controladores.
         $this->controllerFactory = $controllerFactory ?? static function (string $class): object {
             return new $class(ModelFactory::default());
         };
@@ -37,6 +38,7 @@ final class Router
         $path = parse_url($uri, PHP_URL_PATH) ?: '/';
         $base = rtrim((string) Config::get('app.base_path', ''), '/');
 
+        // Permite instalar la app en subcarpetas como /CMDB_Semestral/public.
         if ($base !== '' && str_starts_with($path, $base)) {
             $path = substr($path, strlen($base)) ?: '/';
         }

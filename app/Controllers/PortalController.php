@@ -43,6 +43,7 @@ final class PortalController extends Controller
         $this->requireCollaborator();
         $user = Auth::user();
         $needs = $this->needs->all((int) $user['colaborador_id']);
+        // Cada visita al portal queda registrada para trazabilidad del colaborador.
         $this->audit->portalAccess((int) $user['id']);
 
         // Vista del portal: muestra además historial formal de solicitudes y licencias activas para el colaborador.
@@ -97,6 +98,7 @@ final class PortalController extends Controller
                 ],
                 Auth::id(),
                 $auditId,
+                // Este colaborador_id limita la devolucion a equipos propios y evita IDOR.
                 (int) $user['colaborador_id']
             );
 

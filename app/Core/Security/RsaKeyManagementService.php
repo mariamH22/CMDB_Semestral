@@ -29,6 +29,7 @@ final class RsaKeyManagementService implements KeyManagementInterface
             return null;
         }
 
+        // Se genera una pareja RSA por usuario para soportar no repudio en acciones sensibles.
         $key = openssl_pkey_new([
             'private_key_type' => OPENSSL_KEYTYPE_RSA,
             'private_key_bits' => $bits,
@@ -50,6 +51,7 @@ final class RsaKeyManagementService implements KeyManagementInterface
 
         $publicKey = (string) $details['key'];
         $fingerprint = hash('sha256', $publicKey);
+        // La llave privada nunca se guarda en claro ni dentro de public/.
         $encryptedPrivateKey = $this->encryption->encrypt($privateKey);
         if ($encryptedPrivateKey === null) {
             return null;
@@ -87,4 +89,3 @@ final class RsaKeyManagementService implements KeyManagementInterface
         return $this->encryption->decrypt($encrypted);
     }
 }
-
