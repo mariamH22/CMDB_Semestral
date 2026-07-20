@@ -2,6 +2,18 @@
 
 > Proyecto semestral de **Desarrollo Web VII - I Semestre 2026**.  
 > Tema: **CMDB (Configuration Management Database)**.
+> Integrantes
+Jorge Osorio — 3-754-696
+Ahmed Díaz — 8-974-474
+Obed Alvarado — 8-1015-90
+Christian Domínguez — 8-999-892
+Mariam Harris — 1-756-2331
+
+Grupo: 1GS132
+I Semestre 2026
+Panamá, 20 de julio de 2026
+
+VIDEO!!!!!!!------>>>    https://drive.google.com/file/d/14eCw15HJCfSoKaqyt5iwfXnNSatpok1L/view?usp=drivesdk      <<-----ENLACE DE VIDEO 
 
 ## 1. Propósito
 
