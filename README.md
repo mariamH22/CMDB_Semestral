@@ -2,6 +2,8 @@
 
 > Proyecto semestral de **Desarrollo Web VII - I Semestre 2026**.  
 > Tema: **CMDB (Configuration Management Database)**.
+>
+>
 > Integrantes
 Jorge Osorio — 3-754-696
 Ahmed Díaz — 8-974-474
